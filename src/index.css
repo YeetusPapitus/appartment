@@ -1,4 +1,4 @@
-body {
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -10,4 +10,31 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans;
+  }
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+.active-link::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* positions it just below the nav item */
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg); /* flips triangle upward */
+  margin-top: 10px; /* small gap to touch the white border */
+  border-width: 8px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}
+
