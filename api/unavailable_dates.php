@@ -1,4 +1,7 @@
 <?php
+
+// unavailable_dates.php
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
@@ -6,7 +9,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 require_once 'Database.php';
 
-$pdo = Database::getInstance();  // Singleton DB connection
+$pdo = Database::getInstance();
 
 $method = $_SERVER['REQUEST_METHOD'];
 

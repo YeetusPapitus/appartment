@@ -1,5 +1,7 @@
 <?php
 
+// router.php
+
 require_once 'admin_login.php';
 require_once 'reservations.php';
 require_once 'apartments.php';
@@ -7,7 +9,6 @@ require_once 'images.php';
 require_once 'room_amenities.php';
 require_once 'unavailable_dates.php';
 
-// This function will handle the routing logic based on the request URI
 function routeRequest($url) {
     switch ($url) {
         case '/admin/login':

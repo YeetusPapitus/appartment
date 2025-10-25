@@ -1,23 +1,21 @@
 <?php
+
 // reservations.php
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, PATCH, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Allow OPTIONS method for preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Include Database Singleton class
 require_once 'Database.php';
 
-// Get the PDO instance from the Singleton
 $pdo = Database::getInstance();
 
-// Routing Logic
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
@@ -39,9 +37,6 @@ switch ($method) {
         break;
 }
 
-/**
- * Handle GET requests for listing reservations.
- */
 function handleGetReservations($pdo) {
     try {
         $stmt = $pdo->query("
@@ -70,13 +65,9 @@ function handleGetReservations($pdo) {
     }
 }
 
-/**
- * Handle POST requests to create a new reservation.
- */
 function handlePostReservation($pdo) {
     $input = json_decode(file_get_contents('php://input'), true);
 
-    // Validate input fields and pass $pdo to the validation function
     $fieldErrors = validateReservation($input, $pdo);
 
     if (!empty($fieldErrors)) {
@@ -111,9 +102,7 @@ function handlePostReservation($pdo) {
     }
 }
 
-/**
- * Handle PATCH requests to update reservation status.
- */
+
 function handlePatchReservation($pdo) {
     $input = json_decode(file_get_contents('php://input'), true);
     $id = intval($input['IDReservation'] ?? 0);
@@ -135,9 +124,7 @@ function handlePatchReservation($pdo) {
     }
 }
 
-/**
- * Validate reservation data and check room capacity.
- */
+
 function validateReservation($input, $pdo) {
     $fieldErrors = [];
 
@@ -151,7 +138,6 @@ function validateReservation($input, $pdo) {
     if (!filter_var($input['Email'], FILTER_VALIDATE_EMAIL)) $fieldErrors['Email'] = 'Invalid email address';
     if (empty($input['PhoneNumber'])) $fieldErrors['PhoneNumber'] = 'Phone number is required';
 
-    // Check room capacity
     if ($input['RoomID'] > 0) {
         $stmt = $pdo->prepare("SELECT Guests FROM room WHERE IDRoom = ?");
         $stmt->execute([$input['RoomID']]);

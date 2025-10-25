@@ -1,3 +1,5 @@
+// Apartments.js
+
 import { useState, useEffect } from 'react';
 import { FaUserFriends, FaBed } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -46,8 +48,8 @@ export default function Apartments() {
   }
 
   const getImageForApartment = (roomId) => {
-    const image = images.find((img) => img.RoomID === roomId && img.IsPrimary === 1); // Get primary image
-    return image ? image.ImageURL : ''; // Return the Image URL or empty string if no image
+    const image = images.find((img) => img.RoomID === roomId && img.IsPrimary === 1);
+    return image ? image.ImageURL : '';
   };
 
   return (
@@ -61,7 +63,7 @@ export default function Apartments() {
 
       <div className="flex flex-wrap justify-center gap-6 mb-12">
         {apartments.map((apt) => {
-          const imageURL = getImageForApartment(apt.IDRoom); // Get image URL for this apartment
+          const imageURL = getImageForApartment(apt.IDRoom);
 
           return (
             <div

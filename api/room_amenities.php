@@ -1,23 +1,24 @@
 <?php
+
+// room_amenities.php
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Handle OPTIONS request (CORS preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-require_once 'Database.php'; // Assuming Database.php contains the Singleton logic
+require_once 'Database.php';
 
-$pdo = Database::getInstance();  // Get the database connection from Singleton
+$pdo = Database::getInstance();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    // Get the room-amenity mappings
     try {
         $stmt = $pdo->query("
             SELECT 
@@ -42,7 +43,6 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
-    // Assign an amenity to rooms
     $input = json_decode(file_get_contents('php://input'), true);
     $amenityId = (int)($input['AmenityID'] ?? 0);
     $roomIds = $input['RoomIDs'] ?? [];
@@ -54,7 +54,6 @@ if ($method === 'POST') {
     }
 
     try {
-        // Insert room-amenity mapping
         $ins = $pdo->prepare("INSERT INTO roomamenity (RoomID, AmenityID) VALUES (?, ?)");
         foreach ($roomIds as $rid) {
             $rid = (int)$rid;
@@ -63,7 +62,6 @@ if ($method === 'POST') {
             try {
                 $ins->execute([$rid, $amenityId]);
             } catch (Exception $e) {
-                // Ignore duplicate entries if unique index exists
             }
         }
         echo json_encode(['success' => true]);
@@ -76,7 +74,6 @@ if ($method === 'POST') {
 }
 
 if ($method === 'DELETE') {
-    // Delete room-amenity mapping
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     $amenityId = isset($_GET['amenityId']) ? (int)$_GET['amenityId'] : 0;
     $roomId = isset($_GET['roomId']) ? (int)$_GET['roomId'] : 0;
@@ -103,7 +100,6 @@ if ($method === 'DELETE') {
     }
 }
 
-// Method not allowed
 http_response_code(405);
 echo json_encode(['success' => false, 'error' => 'Method not allowed']);
 exit;

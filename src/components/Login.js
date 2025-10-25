@@ -1,4 +1,4 @@
-// src/components/Login.js
+// Login.js
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,8 +22,8 @@ const Login = () => {
     const data = await response.json();
 
     if (data.token) {
-      localStorage.setItem('token', data.token); // Store JWT token in localStorage
-      navigate('/admin'); // Redirect to the admin page after successful login
+      localStorage.setItem('token', data.token);
+      navigate('/admin');
     } else {
       setError(data.message || 'Invalid credentials');
     }

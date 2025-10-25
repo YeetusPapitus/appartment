@@ -1,3 +1,5 @@
+// AdminLogin.js
+
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -11,15 +13,12 @@ export default function AdminLogin() {
     e.preventDefault();
 
     try {
-      // Make POST request to the backend
       const response = await axios.post('http://localhost/appartment/api/login.php', {
         username,
         password
       });
 
-      // Check the response and save the token if login is successful
       if (response.data.token) {
-        // Save JWT token in localStorage (or in-memory state)
         localStorage.setItem('jwt', response.data.token);
         setToken(response.data.token);
         setError('');

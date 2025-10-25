@@ -1,5 +1,7 @@
 <?php
-// api/images.php
+
+// images.php
+
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -12,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once __DIR__ . '/Database.php'; // singleton returning a PDO
+require_once __DIR__ . '/Database.php';
 $pdo = Database::getInstance();
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -26,7 +28,6 @@ try {
               ORDER BY COALESCE(i.RoomID, 0), i.SortOrder DESC, i.IDImage DESC
             ");
             $images = $stmt->fetch(PDO::FETCH_ASSOC) ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-            // fetchAll already returns [], the extra guard is just defensive
             echo json_encode(['success' => true, 'images' => $images]);
             exit;
         }
@@ -45,7 +46,6 @@ try {
                 exit;
             }
 
-            // Validate type + size
             $allowed = [
                 'image/jpeg' => '.jpg',
                 'image/png'  => '.png',
@@ -66,10 +66,9 @@ try {
                 exit;
             }
 
-            // Save file
             $ext       = $allowed[$mime];
             $filename  = time() . '_' . bin2hex(random_bytes(6)) . $ext;
-            $uploadDir = dirname(__DIR__) . '/uploads'; // htdocs/appartment/uploads
+            $uploadDir = dirname(__DIR__) . '/uploads';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
@@ -80,7 +79,6 @@ try {
                 exit;
             }
 
-            // Compute next sort order within target room
             $stmt = $pdo->prepare("SELECT COALESCE(MAX(SortOrder), 0) FROM image WHERE RoomID = ?");
             $stmt->execute([$roomId]);
             $sortOrder = ((int)$stmt->fetchColumn()) + 1;
@@ -124,16 +122,13 @@ try {
             if ($action === 'assign') {
                 $roomId = isset($input['roomId']) ? (int)$input['roomId'] : 0;
 
-                // next sort order in the (new) room
                 $stmt = $pdo->prepare("SELECT COALESCE(MAX(SortOrder), 0) FROM image WHERE RoomID = ?");
                 $stmt->execute([$roomId]);
                 $sortOrder = ((int)$stmt->fetchColumn()) + 1;
 
-                // update room + set sort order
                 $stmt = $pdo->prepare("UPDATE image SET RoomID = :rid, SortOrder = :so WHERE IDImage = :id");
                 $stmt->execute([':rid' => $roomId, ':so' => $sortOrder, ':id' => $id]);
 
-                // if this image is primary, unset other primaries in the same room
                 $stmt = $pdo->prepare("SELECT IsPrimary FROM image WHERE IDImage = ?");
                 $stmt->execute([$id]);
                 $isPrimary = (int)$stmt->fetchColumn();
@@ -149,7 +144,6 @@ try {
             if ($action === 'set_primary') {
                 $isPrimary = !empty($input['isPrimary']) ? 1 : 0;
 
-                // find image room
                 $stmt = $pdo->prepare("SELECT RoomID FROM image WHERE IDImage = ?");
                 $stmt->execute([$id]);
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -160,7 +154,6 @@ try {
                 $roomId = (int)$row['RoomID'];
 
                 if ($isPrimary) {
-                    // only one primary per room
                     $stmt = $pdo->prepare("UPDATE image SET IsPrimary = 0 WHERE RoomID = :rid");
                     $stmt->execute([':rid' => $roomId]);
                 }
@@ -179,7 +172,6 @@ try {
                     exit;
                 }
 
-                // current image
                 $stmt = $pdo->prepare("SELECT RoomID, SortOrder FROM image WHERE IDImage = ?");
                 $stmt->execute([$id]);
                 $curr = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -192,7 +184,6 @@ try {
                 $currOrder = (int)$curr['SortOrder'];
 
                 if ($direction === 'up') {
-                    // neighbor with the smallest SortOrder greater than current
                     $stmt = $pdo->prepare("
                       SELECT IDImage, SortOrder
                       FROM image
@@ -202,7 +193,6 @@ try {
                     ");
                     $stmt->execute([':rid' => $roomId, ':so' => $currOrder]);
                 } else {
-                    // neighbor with the largest SortOrder less than current
                     $stmt = $pdo->prepare("
                       SELECT IDImage, SortOrder
                       FROM image
@@ -254,7 +244,6 @@ try {
             }
 
             $imageUrl = $row['ImageURL'];
-            // Build absolute path to public file
             $filePath = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\') . DIRECTORY_SEPARATOR . ltrim($imageUrl, '/\\');
             if (is_file($filePath)) {
                 @unlink($filePath);

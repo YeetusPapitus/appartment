@@ -16,7 +16,7 @@ export default function Hero() {
             <h1 className="text-4xl md:text-5xl mb-8">Experience Comfort</h1>
             <h1 className="text-4xl md:text-5xl font-semibold mb-8 text-royal">AppArtment</h1>
             <span className="text-lg md:text-xl max-w-xl mb-8">Luxurious rooms with all the amenities you need for a perfect stay.</span>
-            <a href="#apartments" className="bg-olive text-white px-6 py-3 rounded-xl text-md hover:bg-olive-dark transition">
+            <a href="/apartments" className="bg-olive text-white px-6 py-3 rounded-xl text-md hover:bg-olive-dark transition">
                 View Available Rooms
             </a>
         </div>

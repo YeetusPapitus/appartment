@@ -1,12 +1,12 @@
 <?php
+
 // availability.php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-// Include the Singleton database connection
 require_once 'Database.php';
 
-$pdo = Database::getInstance(); // Use Singleton for DB connection
+$pdo = Database::getInstance();
 
 $roomId = isset($_GET['roomId']) ? (int)$_GET['roomId'] : 0;
 $start = isset($_GET['start']) ? $_GET['start'] : '';
@@ -18,7 +18,6 @@ if ($roomId <= 0) {
     exit;
 }
 
-// Default to the current month if not provided
 if (!$start || !$end) {
     $first = new DateTime('first day of this month 00:00:00');
     $last = new DateTime('last day of this month 00:00:00');
@@ -26,7 +25,6 @@ if (!$start || !$end) {
     $end = $last->format('Y-m-d');
 }
 
-// Validate the provided date range
 try {
     $startDt = new DateTime($start);
     $endDt = new DateTime($end);
@@ -38,7 +36,6 @@ try {
 
 $blocked = [];
 
-// Fetch unavailable dates (1) Unavailable dates
 try {
     $sql = "
     SELECT d FROM (
@@ -71,7 +68,6 @@ try {
     exit;
 }
 
-// Fetch accepted reservations and block dates (2) Accepted reservations
 try {
     $sql = "
     SELECT ci, co FROM (
@@ -106,11 +102,9 @@ try {
         $ci = new DateTime($row['ci']);
         $co = new DateTime($row['co']);
 
-        // Clamp into requested window
         if ($ci < $startDt) $ci = clone $startDt;
         if ($co > $endDt) $co = clone $endDt;
 
-        // Mark each night; check-out day is NOT blocked
         $cursor = clone $ci;
         while ($cursor < $co) {
             $blocked[$cursor->format('Y-m-d')] = true;

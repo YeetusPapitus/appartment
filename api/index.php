@@ -1,41 +1,40 @@
 <?php
 
+// index.php
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Include necessary files
 require_once 'Database.php';
-require_once 'auth.php';  // Assuming you have an auth file for login and token validation
+require_once 'auth.php';
 
-// Get the API request method and URI
 $method = $_SERVER['REQUEST_METHOD'];
 $requestUri = $_SERVER['REQUEST_URI'];
 
-// Routing based on request URI and method
 switch ($requestUri) {
     case '/appartment/api/apartments.php':
-        require_once 'apartments.php';  // Handle apartments API
+        require_once 'apartments.php';
         break;
 
     case '/appartment/api/admin_login.php':
-        require_once 'admin_login.php';  // Handle admin login
+        require_once 'admin_login.php';
         break;
 
     case '/appartment/api/reservations.php':
-        require_once 'reservations.php';  // Handle reservations API
+        require_once 'reservations.php';
         break;
 
     case '/appartment/api/images.php':
-        require_once 'images.php';  // Handle images API
+        require_once 'images.php';
         break;
 
     case '/appartment/api/room_amenities.php':
-        require_once 'room_amenities.php';  // Handle room amenities API
+        require_once 'room_amenities.php';
         break;
 
     case '/appartment/api/unavailable_dates.php':
-        require_once 'unavailable_dates.php';  // Handle unavailable dates API
+        require_once 'unavailable_dates.php';
         break;
 
     case '/appartment/api/availability.php':

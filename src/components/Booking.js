@@ -22,7 +22,7 @@ export default function Booking() {
       .then(data => {
         if (data.success) {
           setApartments(data.apartments);
-          if (data.apartments?.length) setRoomId(String(data.apartments[0].IDRoom)); // default select
+          if (data.apartments?.length) setRoomId(String(data.apartments[0].IDRoom));
         } else {
           setError('Failed to load apartments');
         }

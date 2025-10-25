@@ -1,13 +1,16 @@
 <?php
+
+// Database.php
+
 class Database {
     private static $instance = null;
     private $pdo;
 
     private function __construct() {
-        $host = 'localhost';  // your db host
-        $db   = 'appartment'; // your database name
-        $user = 'root';       // your database user
-        $pass = '';           // your database password
+        $host = 'localhost';
+        $db   = 'appartment';
+        $user = 'root';
+        $pass = '';
         $dsn  = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
         try {
